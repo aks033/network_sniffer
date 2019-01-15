@@ -2,33 +2,55 @@ from scapy.all import IP
 from scapy.all import sniff
 from scapy.layers import http
 import dpkt
+from threading import Thread
+import time
+import operator
+from datetime import datetime
+from datetime import timedelta
+import config
+from termcolor import colored
+import logging
+from collections import Counter
 
-# dictionary to keep a count of urls
-url_dict = {}
+class Sniffer(Thread):
 
-def sniff_urls(packet):
+	def __init__(self, interface, counter):
+		super(Sniffer, self).__init__()
 
-	if packet.haslayer(http.HTTPRequest):
-		http_layer = packet.getlayer(http.HTTPRequest)
-		ip_layer = packet.getlayer(IP)
-		#print '\n{0[src]} - {1[Method]} - http://{1[Host]}{1[Path]}'.format(ip_layer.fields, http_layer.fields)
-		print http_layer.fields
+		self.interface = interface
+		self.url_counter = counter
+
+	def run(self):
+		sniff(iface = self.interface, filter='ip', prn=self.sniff_urls)
+
+	def sniff_urls(self, packet):
 		
-		url_key = http_layer.fields["Host"]
-		#print http_layer.fields["Path"], http_layer.fields["Path"].strip('/').split('/')
+		#global total_url_hits_per_min
+		#global url_dict
+		if packet.haslayer(http.HTTPRequest):
+			http_layer = packet.getlayer(http.HTTPRequest)
+			ip_layer = packet.getlayer(IP)
+			logging.info('\n{0[src]} - {1[Method]} - http://{1[Host]}{1[Path]}'.format(ip_layer.fields, http_layer.fields))
+			#print http_layer.fields
+			
+			url_key = http_layer.fields["Host"]
 
-		path = http_layer.fields["Path"].strip('/').split('/')
-		if(len(path) > 0):
-			url_key = url_key + "/"+ path[0]
-			if url_key not in url_dict:
-				url_dict[url_key] = 1
-			else:
-				url_dict[url_key] = url_dict[url_key] + 1
+			#print http_layer.fields["Path"], http_layer.fields["Path"].strip('/').split('/')
 
-		display_website_stats(url_dict)
+			path = http_layer.fields["Path"].strip('/').split('/')
+			#print "host ::", http_layer.fields["Host"]
+			#print "path ::",path
+			if(len(path) > 0 and path[0] != ""):
+				url_key = url_key + "/"+ path[0]
+				self.url_counter.update([url_key])
+				
+			#	if url_key not in url_dict:
+			#		url_dict[url_key] = 1
+			#	else:
+			#		url_dict[url_key] = url_dict[url_key] + 1
 
-def display_website_stats(url_dict):
-	print url_dict
+				#total_url_hits_per_min = total_url_hits_per_min + 1
+			#print "in packet thread ", total_url_hits_per_min		
+			
+		#return recv_packets			
 
-dev = 'enp0s3'
-sniff(iface = dev, filter='tcp', prn=sniff_urls)
