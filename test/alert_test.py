@@ -28,6 +28,7 @@ class AlertTest(unittest.TestCase):
 		self.alerts = alert.Alert(self.packet_sniffer, avg_hits)
 		self.packet_sniffer.daemon = True
 		self.alerts.daemon = True
+		
 		# logger configuration
 		logging.basicConfig(filename = config.log_file, level=logging.INFO)
 
