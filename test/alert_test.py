@@ -26,16 +26,16 @@ class AlertTest(unittest.TestCase):
 		# instances of classes - packet sniffer, alert and display 
 		self.packet_sniffer = sniffer.Sniffer(config.dev, url_counter, traffic_queue)
 		self.alerts = alert.Alert(self.packet_sniffer, avg_hits)
-		self.app_display = display.Display(self.packet_sniffer, self.alerts)
-
+		self.packet_sniffer.daemon = True
+		self.alerts.daemon = True
 		# logger configuration
 		logging.basicConfig(filename = config.log_file, level=logging.INFO)
 
 		
 		print "setup done"
 
-	def tearDown(self):
-		os._exit(1)
+	#def tearDown(self):
+		
 
 	def test_alert(self):
 		data = sys.stdout
