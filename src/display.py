@@ -48,7 +48,6 @@ class Display(Thread):
 				print "Traffic rate (per minute) - ", sum(self.avg_traffic_per_min_list)/(len(self.avg_traffic_per_min_list)*1.0)
 				print "\n\n\n"
 
-				#print self.alerts.traffic_at_alert_time , self.alerts.alert_recovery_time
 				if(self.alerts.alert_time != None):
 					self.generate_high_traffic_alert(self.alerts.traffic_at_alert_time, self.alerts.alert_time)
 

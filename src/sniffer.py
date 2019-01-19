@@ -16,14 +16,13 @@ class Sniffer(Thread):
 	def __init__(self, interface, counter, traffic_queue):
 		super(Sniffer, self).__init__()
 
-		self.interface = interface
-		self.url_counter = counter
-		self.traffic_queue = traffic_queue
-		self.packet_list = []
-		self.ip_list = Counter()
-
+		self.interface = interface # interface from where to sniff traffic
+		self.url_counter = counter # counter to amintain url counts
+		self.traffic_queue = traffic_queue # to maintain traffic to check traffic for the last 2 mins 
+		self.ip_list = Counter() # to keep IP addresses
 
 	def run(self):
+		''' to sniff tcp packets on the desired interface'''
 		sniff(iface = self.interface, filter='tcp', prn=self.sniff_urls)
 
 	def sniff_urls(self, packet):		
