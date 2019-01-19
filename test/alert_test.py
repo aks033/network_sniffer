@@ -19,7 +19,7 @@ class AlertTest(unittest.TestCase):
 
 		self.test_urls = set(["http://www.umass.edu/about", "http://fossilinsects.myspecies.info/about", "http://nyu.edu/careers"])
 
-		avg_hits = config.initial_anticipated_avg #static value of avg hits
+		avg_hits = 20 #static value of avg hits
 		traffic_queue = [] # keeps a tuple of (time of packet, url)
 		url_counter = Counter() # keeps a count of url section
 
@@ -28,14 +28,12 @@ class AlertTest(unittest.TestCase):
 		self.alerts = alert.Alert(self.packet_sniffer, avg_hits)
 		self.packet_sniffer.daemon = True
 		self.alerts.daemon = True
-		
+
 		# logger configuration
-		logging.basicConfig(filename = config.log_file, level=logging.INFO)
+		logging.basicConfig(filename = 'traffic_test', level=logging.INFO)
 
 		
 		print "setup done"
-
-	#def tearDown(self):
 		
 
 	def test_alert(self):
@@ -54,7 +52,7 @@ class AlertTest(unittest.TestCase):
 				for i in self.test_urls:	
 					print requests.get(i)
 
-			time.sleep(30)
+			time.sleep(15)
 			print self.alerts.high_traffic_flag
 			self.assertTrue(self.alerts.high_traffic_flag)
 
