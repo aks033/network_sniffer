@@ -39,13 +39,14 @@ class Alert(Thread):
 				#no. of hits in last two minutes
 				traffic_last_two_mins = len(self.sniffer_obj.traffic_queue)
 
+				# if traffic more than average value
 				if(traffic_last_two_mins > self.avg_hits and time_of_last_hit[0][0] != self.alert_time):
 					self.high_traffic_flag = True
 					self.recovered_flag = False
 					self.alert_time =  time_of_last_hit[0][0]
 					self.traffic_at_alert_time = traffic_last_two_mins
 					logging.info("\n*********** HIGH TRAFFIC GENERATED AN ALERT : URL HITS - {} AT TIME {} ***********".format(self.traffic_at_alert_time, self.alert_time))
-
+				# if traffic has recovered	
 				elif (self.high_traffic_flag and traffic_last_two_mins < self.avg_hits):
 					self.high_traffic_flag = False
 					self.alert_recovery_time = datetime.now()
