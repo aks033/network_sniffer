@@ -21,8 +21,6 @@ class Alert(Thread):
 		self.alert_time = None
 		self.traffic_at_alert_time = None
 		self.alert_recovery_time = None
-		#path = os.path.dirname(os.getcwd())
-		#logging.basicConfig(filename = path+config.alert_file, level=logging.DEBUG)
 
 	def run(self):
 		self.examine_traffic_behaviour()
@@ -40,11 +38,8 @@ class Alert(Thread):
 				
 				#no. of hits in last two minutes
 				traffic_last_two_mins = len(self.sniffer_obj.traffic_queue)
-				
-				#print(self.sniffer_obj.traffic_queue)
 
 				if(traffic_last_two_mins > self.avg_hits and time_of_last_hit[0][0] != self.alert_time):
-					#self.generate_high_traffic_alert(traffic_last_two_mins, time_of_last_hit[0])
 					self.high_traffic_flag = True
 					self.recovered_flag = False
 					self.alert_time =  time_of_last_hit[0][0]
@@ -53,7 +48,6 @@ class Alert(Thread):
 
 				elif (self.high_traffic_flag and traffic_last_two_mins < self.avg_hits):
 					self.high_traffic_flag = False
-					#self.generate_recovered_high_traffic_alert(time_of_last_hit[0])
 					self.alert_recovery_time = datetime.now()
 					self.recovered_flag = True
 					logging.info("\n********** RECOVERED FROM HIGH TRAFFIC AT {} ************".format(self.alert_recovery_time))

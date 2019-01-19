@@ -34,11 +34,7 @@ class Sniffer(Thread):
 			self.ip_list.update([ip_layer.fields["dst"]])
 			
 			url_key = http_layer.fields["Host"]
-
-			#print http_layer.fields["Path"], http_layer.fields["Path"].strip('/').split('/')
-
 			path = http_layer.fields["Path"].strip('/').split('/')
-			#print "path =", path
 			if(len(path) > 0 and path[0] != ""):
 				url_key = url_key + "/"+ path[0]
 				self.url_counter.update([url_key])
