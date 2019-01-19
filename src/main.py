@@ -25,12 +25,13 @@ def main():
 	alerts = alert.Alert(packet_sniffer, avg_hits)
 	app_display = display.Display(packet_sniffer, alerts)
 
-	# logger configuration
-	logging.basicConfig(filename = config.log_file, level=logging.INFO)
+	try:
+		#log configuration 
+		path = os.path.dirname(os.getcwd())
+		logging.basicConfig(filename = path+config.log_file, level=logging.INFO)
+	except IOError as e :
+		print str(e)
 
-	#packet_sniffer.daemon = True
-	#app_display.deamon = True
-	#alerts.daemon = True
 	try:
 		#start all threads
 		packet_sniffer.start()
