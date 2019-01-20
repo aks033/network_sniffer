@@ -5,7 +5,6 @@ path = os.path.dirname(os.getcwd())
 import sys 
 sys.path.insert(0, path)
 from src import config
-from StringIO import StringIO
 import requests
 from src import sniffer
 from src import display
@@ -40,24 +39,23 @@ class AlertTest(unittest.TestCase):
 		data = sys.stdout
 		try:
 			print "starting test"
-			output = StringIO()
-			sys.stdout = output
 
 			#start all threads
 			self.packet_sniffer.start()
 			self.alerts.start()
 
 			# send requests
+			print "sending requests...."
 			for j in xrange(10):
 				for i in self.test_urls:	
-					print requests.get(i)
+					requests.get(i)
 
 			time.sleep(15)
-			print self.alerts.high_traffic_flag
+			print "high_traffic_flag:",self.alerts.high_traffic_flag
 			self.assertTrue(self.alerts.high_traffic_flag)
 
-			time.sleep(180)
-			print self.alerts.recovered_flag
+			time.sleep(130) # 10 seconds extra in case the alert thread is sleeping at the 2 min mark
+			print"recovered_flag:",self.alerts.recovered_flag
 			self.assertFalse(self.alerts.high_traffic_flag)
 			self.assertTrue(self.alerts.recovered_flag)
 
