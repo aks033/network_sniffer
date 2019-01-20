@@ -27,8 +27,8 @@ class Sniffer(Thread):
 
 	def sniff_urls(self, packet):		
 		if packet.haslayer(http.HTTPRequest):
-			http_layer = packet.getlayer(http.HTTPRequest)
-			ip_layer = packet.getlayer(IP)
+			http_layer = packet.getlayer(http.HTTPRequest) # HTTP fields dictionary
+			ip_layer = packet.getlayer(IP) # IP fields dictionary
 			logging.info('\n{0[src]} - {1[Method]}- http://{1[Host]}{1[Path]}'.format(ip_layer.fields, http_layer.fields))
 			self.ip_list.update([ip_layer.fields["dst"]])
 			
